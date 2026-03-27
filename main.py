@@ -1,13 +1,10 @@
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star
 from astrbot.api import logger # 使用 astrbot 提供的 logger 接口
-from astrbot.api import AstrBotConfig
 import requests
 class MyPlugin(Star):
-    def __init__(self, context: Context, config: AstrBotConfig): # AstrBotConfig 继承自 Dict，拥有字典的所有方法
+    def __init__(self, context: Context): # AstrBotConfig 继承自 Dict，拥有字典的所有方法
         super().__init__(context)
-        self.config = config
-        print(self.config)
 
     @filter.event_message_type(filter.EventMessageType.PRIVATE_MESSAGE)
     @filter.command("use")
