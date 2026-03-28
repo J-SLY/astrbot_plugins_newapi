@@ -3,13 +3,25 @@ from astrbot.api.star import Context, Star
 from astrbot.api import logger # 使用 astrbot 提供的 logger 接口
 import requests
 class MyPlugin(Star):
-    def __init__(self, context: Context): # AstrBotConfig 继承自 Dict，拥有字典的所有方法
+    def __init__(self, context: Context): 
         super().__init__(context)
 
     @filter.event_message_type(filter.EventMessageType.PRIVATE_MESSAGE)
-    @filter.command("use")
-    async def use(self, event: AstrMessageEvent, url:str, token:str, userId:str|int, key:str):
-        '''这是一个兑换码兑换指令''' # 这是 handler 的描述，将会被解析方便用户了解插件内容。非常建议填写。
+    @filter.command("login",alias={"登录"})
+    async def login(self,event:AstrMessageEvent,token:str,userId:int|str):
+        """这是一个登录指令"""
+        sendId=await event.get_sender_id()
+        await self.put_kv_data(f"{sendId}Token",token)
+        await self.put_kv_data(f"{sendId}Token",token)
+    @filter.event_message_type(filter.EventMessageType.PRIVATE_MESSAGE)
+    @filter.command("exchange",alias={"兑换"})
+    async def use(self, event: AstrMessageEvent, key:str):
+        '''这是一个兑换码兑换指令''' 
+        sendId=await event.get_sender_id()
+        token=await self.get_kv_data(f"{sendId}Token","")
+        userId=await self.get_kv_data(f"{sendId}Id","")
+        url="https://ai.luogu.me/api/user/topup"
+
         body=f"""{{
             "key": "{key}"
         }}"""
